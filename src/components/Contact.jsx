@@ -22,40 +22,69 @@ export default function Contact() {
     const senderName = import.meta.env.VITE_BREVO_SENDER_NAME || "Amit Mahajan Portfolio";
 
     try {
-      const response = await fetch("https://api.brevo.com/v3/smtp/email", {
-        method: "POST",
-        headers: {
-          "accept": "application/json",
-          "api-key": apiKey,
-          "content-type": "application/json"
-        },
-        body: JSON.stringify({
-          sender: {
-            name: senderName,
-            email: senderEmail
+      let response;
+      let usedServerless = false;
+
+      // 1. Try sending via the serverless function (hides the API key, runs on Vercel backend)
+      try {
+        response = await fetch("/api/send-email", {
+          method: "POST",
+          headers: {
+            "content-type": "application/json"
           },
-          to: [
-            {
-              email: senderEmail,
-              name: "Amit Mahajan"
-            }
-          ],
-          replyTo: {
+          body: JSON.stringify({
+            name: formState.name,
             email: formState.email,
-            name: formState.name
+            subject: formState.subject,
+            message: formState.message
+          })
+        });
+        
+        // If the path was found (it is not a 404), mark it as processed
+        if (response.status !== 404) {
+          usedServerless = true;
+        }
+      } catch (err) {
+        console.warn("Serverless API endpoint failed or unreachable, falling back to direct Brevo call:", err);
+      }
+
+      // 2. Fallback to client-side direct request (e.g. during local Vite development)
+      if (!usedServerless || !response || response.status === 404) {
+        response = await fetch("https://api.brevo.com/v3/smtp/email", {
+          method: "POST",
+          headers: {
+            "accept": "application/json",
+            "api-key": apiKey,
+            "content-type": "application/json"
           },
-          subject: `Portfolio Contact: ${formState.subject}`,
-          htmlContent: `
-            <h3>New Message from Portfolio Contact Form</h3>
-            <p><strong>Name:</strong> ${formState.name}</p>
-            <p><strong>Email:</strong> ${formState.email}</p>
-            <p><strong>Subject:</strong> ${formState.subject}</p>
-            <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;" />
-            <p><strong>Message:</strong></p>
-            <p style="white-space: pre-wrap; line-height: 1.5; color: #333;">${formState.message}</p>
-          `
-        })
-      });
+          body: JSON.stringify({
+            sender: {
+              name: senderName,
+              email: senderEmail
+            },
+            to: [
+              {
+                email: senderEmail,
+                name: "Amit Mahajan"
+              }
+            ],
+            replyTo: {
+              email: formState.email,
+              name: formState.name
+            },
+            subject: `Portfolio Contact: ${formState.subject}`,
+            htmlContent: `
+              <h3>New Message from Portfolio Contact Form (Client Fallback)</h3>
+              <p><strong>Name:</strong> ${formState.name}</p>
+              <p><strong>Email:</strong> ${formState.email}</p>
+              <p><strong>Subject:</strong> ${formState.subject}</p>
+              <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;" />
+              <p><strong>Message:</strong></p>
+              <p style="white-space: pre-wrap; line-height: 1.5; color: #333;">${formState.message}</p>
+            `
+          })
+        });
+      }
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
