@@ -1,3 +1,4 @@
+import { jsPDF } from "jspdf";
 import { portfolioData } from "./portfolioData";
 
 // ─── Design Tokens ───────────────────────────────────────────────────────────
@@ -76,7 +77,6 @@ function guard(doc, y, need = 14) {
  * 'view'     → opens a blob URL in a new tab
  */
 export async function generateResumePdf(action = "download") {
-  const { jsPDF } = await import("jspdf");
   const doc = new jsPDF({ unit: "mm", format: "a4" });
 
   // Set PDF metadata — viewers use this as the tab/window title
