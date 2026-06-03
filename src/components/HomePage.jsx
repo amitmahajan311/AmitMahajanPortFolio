@@ -328,8 +328,9 @@ export default function HomePage() {
           -webkit-mask-image: -webkit-radial-gradient(white, black);
         }
         .hero-avatar-img {
-          width: 100%;
-          height: 100%;
+          display: block;
+          width: 120px;
+          height: 120px;
           object-fit: cover;
           border-radius: 50%;
           transform: scale(1.05) translateZ(0);
