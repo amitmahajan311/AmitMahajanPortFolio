@@ -6,10 +6,10 @@ export default async function handler(req, res) {
 
   const { name, email, subject, message } = req.body;
 
-  // Retrieve secret variables from the server environment
-  const apiKey = process.env.BREVO_API_KEY;
-  const senderEmail = process.env.BREVO_SENDER_EMAIL || "amitmahajan264889@gmail.com";
-  const senderName = process.env.BREVO_SENDER_NAME || "Amit Mahajan Portfolio";
+  // Retrieve secret variables from the server environment, supporting VITE_ prefixes as fallbacks
+  const apiKey = process.env.BREVO_API_KEY || process.env.VITE_BREVO_API_KEY;
+  const senderEmail = process.env.BREVO_SENDER_EMAIL || process.env.VITE_BREVO_SENDER_EMAIL || "amitmahajan264889@gmail.com";
+  const senderName = process.env.BREVO_SENDER_NAME || process.env.VITE_BREVO_SENDER_NAME || "Amit Mahajan Portfolio";
 
   if (!apiKey) {
     return res.status(500).json({ message: 'Server configuration error: Brevo API key is not set.' });
