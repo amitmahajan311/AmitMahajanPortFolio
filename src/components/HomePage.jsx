@@ -313,6 +313,7 @@ export default function HomePage() {
           justify-content: center;
         }
         .ai-core {
+          position: relative;
           width: 120px;
           height: 120px;
           background: var(--bg-tertiary);
@@ -324,16 +325,17 @@ export default function HomePage() {
           z-index: 10;
           box-shadow: 0 0 30px rgba(8, 145, 178, 0.35);
           overflow: hidden;
+          -webkit-mask-image: -webkit-radial-gradient(white, black);
         }
         .hero-avatar-img {
           width: 100%;
           height: 100%;
           object-fit: cover;
           border-radius: 50%;
-          transform: scale(1.05);
+          transform: scale(1.05) translateZ(0);
           transition: transform 0.4s ease;
         }
-        .hero-avatar-img:hover { transform: scale(1.15); }
+        .hero-avatar-img:hover { transform: scale(1.15) translateZ(0); }
         .ai-orbit {
           position: absolute;
           border-radius: 50%;
