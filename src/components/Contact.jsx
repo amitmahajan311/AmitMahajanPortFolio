@@ -3,7 +3,7 @@ import { portfolioData } from "../portfolioData";
 
 export default function Contact() {
   const { contact } = portfolioData;
-  const [formState, setFormState] = useState({ name: "", email: "", subject: "", message: "" });
+  const [formState, setFormState] = useState({ name: "", subject: "", message: "" });
   const [submitted, setSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
@@ -12,93 +12,42 @@ export default function Contact() {
     document.title = "Contact | Amit Mahajan";
   }, []);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setSending(true);
     setErrorMsg("");
 
-    const apiKey = import.meta.env.VITE_BREVO_API_KEY;
-    const senderEmail = import.meta.env.VITE_BREVO_SENDER_EMAIL || "amitmahajan264889@gmail.com";
-    const senderName = import.meta.env.VITE_BREVO_SENDER_NAME || "Amit Mahajan Portfolio";
-
     try {
-      let response;
-      let usedServerless = false;
+      const recipient = "amitmahajan264889@gmail.com";
+      const subject = encodeURIComponent(`[Portfolio Inquiry] ${formState.subject.trim()}`);
+      const body = encodeURIComponent(
+        `${formState.message.trim()}\n\n` +
+        `Regards,\n` +
+        `${formState.name.trim()}`
+      );
+      
+      // Check if user is on mobile
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-      // 1. Try sending via the serverless function (hides the API key, runs on Vercel backend)
-      try {
-        response = await fetch("/api/send-email", {
-          method: "POST",
-          headers: {
-            "content-type": "application/json"
-          },
-          body: JSON.stringify({
-            name: formState.name,
-            email: formState.email,
-            subject: formState.subject,
-            message: formState.message
-          })
-        });
-        
-        // If the path was found (it is not a 404), mark it as processed
-        if (response.status !== 404) {
-          usedServerless = true;
-        }
-      } catch (err) {
-        console.warn("Serverless API endpoint failed or unreachable, falling back to direct Brevo call:", err);
+      if (isMobile) {
+        // On mobile, mailto: is the standard and most reliable way to trigger their default mail client (like the Gmail app)
+        const mailtoUrl = `mailto:${recipient}?subject=${subject}&body=${body}`;
+        window.location.href = mailtoUrl;
+      } else {
+        // On desktop, open Gmail Web Compose in a new tab
+        const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${recipient}&su=${subject}&body=${body}`;
+        window.open(gmailUrl, "_blank", "noopener,noreferrer");
       }
 
-      // 2. Fallback to client-side direct request (e.g. during local Vite development)
-      if (!usedServerless || !response || response.status === 404) {
-        response = await fetch("https://api.brevo.com/v3/smtp/email", {
-          method: "POST",
-          headers: {
-            "accept": "application/json",
-            "api-key": apiKey,
-            "content-type": "application/json"
-          },
-          body: JSON.stringify({
-            sender: {
-              name: senderName,
-              email: senderEmail
-            },
-            to: [
-              {
-                email: senderEmail,
-                name: "Amit Mahajan"
-              }
-            ],
-            replyTo: {
-              email: formState.email,
-              name: formState.name
-            },
-            subject: `Portfolio Contact: ${formState.subject}`,
-            htmlContent: `
-              <h3>New Message from Portfolio Contact Form (Client Fallback)</h3>
-              <p><strong>Name:</strong> ${formState.name}</p>
-              <p><strong>Email:</strong> ${formState.email}</p>
-              <p><strong>Subject:</strong> ${formState.subject}</p>
-              <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;" />
-              <p><strong>Message:</strong></p>
-              <p style="white-space: pre-wrap; line-height: 1.5; color: #333;">${formState.message}</p>
-            `
-          })
-        });
-      }
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || "Failed to send email via Brevo.");
-      }
-
+      // Show success banner and reset form state
       setSubmitted(true);
-      setFormState({ name: "", email: "", subject: "", message: "" });
+      setFormState({ name: "", subject: "", message: "" });
       setTimeout(() => {
         setSubmitted(false);
       }, 7000);
     } catch (err) {
-      console.error("Email sending error:", err);
-      setErrorMsg(err.message || "There was an error sending your message. Please try again or email directly.");
+      console.error("Redirection error:", err);
+      setErrorMsg("Failed to open the mail client. Please email directly to amitmahajan264889@gmail.com.");
     } finally {
       setSending(false);
     }
@@ -175,8 +124,8 @@ export default function Contact() {
               <div className="submit-success-banner" role="alert" id="contact-form-success">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
                 <div>
-                  <h5>Message Received!</h5>
-                  <p>Thank you. Amit will respond to your inquiry shortly.</p>
+                  <h5>Email client opened!</h5>
+                  <p>Please send the prefilled email in your mail application. Amit will respond shortly.</p>
                 </div>
               </div>
             ) : (
@@ -188,33 +137,18 @@ export default function Contact() {
                   </div>
                 )}
 
-                <div className="form-group-row">
-                  <div className="form-group">
-                    <label htmlFor="contact-name">Name</label>
-                    <input 
-                      type="text" 
-                      id="contact-name" 
-                      name="name" 
-                      value={formState.name} 
-                      onChange={handleInputChange} 
-                      placeholder="Your Name" 
-                      required 
-                      disabled={sending}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="contact-email">Email Address</label>
-                    <input 
-                      type="email" 
-                      id="contact-email" 
-                      name="email" 
-                      value={formState.email} 
-                      onChange={handleInputChange} 
-                      placeholder="you@example.com" 
-                      required 
-                      disabled={sending}
-                    />
-                  </div>
+                <div className="form-group">
+                  <label htmlFor="contact-name">Name</label>
+                  <input 
+                    type="text" 
+                    id="contact-name" 
+                    name="name" 
+                    value={formState.name} 
+                    onChange={handleInputChange} 
+                    placeholder="Your Name" 
+                    required 
+                    disabled={sending}
+                  />
                 </div>
 
                 <div className="form-group">
@@ -240,6 +174,7 @@ export default function Contact() {
                     onChange={handleInputChange} 
                     rows="5" 
                     placeholder="Hi Amit, we are looking for a Senior AI Engineer to lead..." 
+                    maxLength={1500}
                     required
                     disabled={sending}
                   ></textarea>
