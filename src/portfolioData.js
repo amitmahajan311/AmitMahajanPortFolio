@@ -245,6 +245,40 @@ export const portfolioData = {
       ],
       impact: "Delivered end-to-end production support for critical ETL workflows, ensuring uninterrupted data processing and system reliability across 3,000+ jobs, and successfully modernizing 1,400+ objects with 100% data integrity.",
       linkText: "Ab Initio, Teradata, Snowflake & Control Center"
+    },
+    {
+      id: "excel-data-cleanup-sandbox",
+      title: "Excel Data Cleanup & Validation Sandbox",
+      subtitle: "Data Engineering, Ingestion Pipelines & Interactive ETL",
+      tech: ["React", "FastAPI", "Pandas", "Tailwind CSS", "Python", "REST API", "openpyxl", "xlsxwriter"],
+      role: "Full-Stack ETL Developer",
+      problem: "Raw client spreadsheet uploads (CSV, XLS, XLSX) frequently suffer from trailing whitespaces, invalid email syntax, non-standardized date structures (e.g. May 20, 2026 vs 2026-05-20), and duplicate records with capitalization typos. These data discrepancies bypass standard ingestion rules, corrupting database tables and causing downstream reporting failures.",
+      solution: "Developed a decoupled, full-stack ETL sandbox platform. The frontend dashboard gives users real-time previews of original sheets, missing values rates, and date anomalies. A high-performance FastAPI backend executes a customizable pipeline (whitespace trimming, email domain validation, case formatting, and date standardization). The system finishes with a case-insensitive, composite duplicate matching engine to resolve rows that only become identical after formatting.",
+      contributions: [
+        "Case-Insensitive Composite Matching: Engineered a type-agnostic duplicate detection algorithm using Pandas, matching rows on combined keys (like ID and Name) regardless of casing typos or integer-to-string format mismatches.",
+        "Compliance Audit & Diff Tracking: Built an element-wise comparison utility tracking cell edits, row deletions, and column drops to feed a searchable Audit Trail and generate corporate Quality Excel reports.",
+        "Robust Excel Parsers: Implemented custom try-except wrappers over python spreadsheet libraries (openpyxl and xlrd) to capture zip-bomb or engine faults, returning friendly diagnostic tips to the user instead of raw stack traces."
+      ],
+      impact: "Delivered 95% speed reduction in spreadsheet cleaning cycles for operations teams, intercepting structural faults before database ingestion and securing 100% downstream analytical data integrity.",
+      linkText: "React, Vite, FastAPI, Pandas, openpyxl & xlsxwriter",
+      demoUrl: "https://excel-data-cleanup-and-validation-t.vercel.app",
+      architecture: {
+        description: "The application follows a decoupled Client-Server pattern split into three main modules: React Dashboard, Communication Protocol (REST API), and FastAPI & Pandas pipeline backend.",
+        steps: [
+          {
+            title: "1. Client Side (React Dashboard)",
+            detail: "Includes a dynamic Settings Panel for parameter toggles (whitespace trimming, casing conversions, date standardization), Upload Handler for extensions checking and multipart uploads, and Preview Screens displaying missing value highlights."
+          },
+          {
+            title: "2. Communication Protocol (REST API)",
+            detail: "Features stateless endpoints communicating via axios with secure, in-memory session folder caching backend to minimize network overhead."
+          },
+          {
+            title: "3. Backend Engine (FastAPI & Pandas Pipeline)",
+            detail: "Fires datasets through sequential ETL steps: Data Normalization (blank dropping, whitespace trim), Email & Date Standardization (regex parsing to ISO YYYY-MM-DD), Late-Stage Composite Duplicates Matching (casing/type-agnostic normalization), and Audit Change Log generation."
+          }
+        ]
+      }
     }
   ],
 

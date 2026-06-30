@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { portfolioData } from "../portfolioData";
+import excelArchitecture from "../assets/projects/excel_data_cleanup_and_validation_architecture_diagram.jpg";
 
 // Category map for each project
 const PROJECT_CATEGORIES = {
@@ -8,6 +9,7 @@ const PROJECT_CATEGORIES = {
   "rag-validation-automation": "Automation",
   "common-ui-accelerator": "UI/Platform",
   "bcbs-edw-modernization": "Data",
+  "excel-data-cleanup-sandbox": "Data",
 };
 
 const FILTERS = ["All", "GenAI", "Automation", "UI/Platform", "Data"];
@@ -158,6 +160,32 @@ export default function Projects() {
                       ))}
                     </ul>
                   </div>
+
+                  {selectedProject.architecture && (
+                    <div className="modal-section-block">
+                      <h4>System Architecture & Flow</h4>
+                      <p>{selectedProject.architecture.description}</p>
+                      {selectedProject.id === "excel-data-cleanup-sandbox" && (
+                        <div style={{ marginTop: "1rem", marginBottom: "1.5rem" }}>
+                          <img 
+                            src={excelArchitecture} 
+                            alt="Architecture Diagram" 
+                            style={{ width: "100%", borderRadius: "10px", border: "1px solid var(--border-color)", background: "rgba(255,255,255,0.02)", display: "block" }} 
+                          />
+                        </div>
+                      )}
+                      {selectedProject.architecture.steps && (
+                        <div className="architecture-steps-list" style={{ display: "flex", flexDirection: "column", gap: "1rem", marginTop: "1rem" }}>
+                          {selectedProject.architecture.steps.map((step, idx) => (
+                            <div key={idx} className="architecture-step-item" style={{ borderLeft: "2px solid var(--accent-purple)", paddingLeft: "1rem" }}>
+                              <h5 style={{ fontSize: "0.95rem", color: "var(--text-primary)", fontWeight: "700", marginBottom: "0.25rem" }}>{step.title}</h5>
+                              <p style={{ fontSize: "0.88rem", color: "var(--text-secondary)", margin: 0, lineHeight: "1.5" }}>{step.detail}</p>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
 
                 <div className="modal-right-sidebar">
@@ -173,6 +201,35 @@ export default function Projects() {
                     <h5>Platform Integration</h5>
                     <p>{selectedProject.linkText}</p>
                   </div>
+                  {selectedProject.demoUrl && (
+                    <a 
+                      href={selectedProject.demoUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="btn btn-primary modal-demo-btn"
+                      style={{ 
+                        marginTop: "1.5rem", 
+                        width: "100%", 
+                        textAlign: "center", 
+                        display: "inline-flex", 
+                        justifyContent: "center", 
+                        alignItems: "center", 
+                        gap: "0.5rem",
+                        padding: "0.8rem",
+                        borderRadius: "8px",
+                        fontWeight: "600",
+                        fontSize: "0.9rem",
+                        textDecoration: "none"
+                      }}
+                    >
+                      <span>Live Demo</span>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                        <polyline points="15 3 21 3 21 9"/>
+                        <line x1="10" y1="14" x2="21" y2="3"/>
+                      </svg>
+                    </a>
+                  )}
                 </div>
               </div>
             </div>
