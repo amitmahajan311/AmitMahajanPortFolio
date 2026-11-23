@@ -8,7 +8,7 @@ export const portfolioData = {
     location: "Pune, India",
     relocationStatus: "Open to Relocation",
     headline: "Engineering Intelligent Systems & Enterprise-Scale Generative AI Solutions",
-    summary: `Senior AI Engineer with 4+ years of experience designing and delivering Generative AI applications, enterprise AI platforms, and intelligent automation solutions. Expert in leveraging Azure AI Services, OpenAI LLMs, Python, FastAPI, Streamlit, React.js, AI Guardrails, and Retrieval-Augmented Generation (RAG). Highly accomplished in build document intelligence solutions, AI governance frameworks, automated validation platforms, and reusable AI accelerators supporting enterprise adoption of Generative AI. Strong foundation in cloud technologies, data engineering, Snowflake migration, and large-scale healthcare data modernization initiatives.`,
+    summary: `Senior AI Engineer with 4.5+ years of experience designing and delivering Generative AI applications, enterprise AI platforms, and intelligent automation solutions across healthcare and insurance. Currently automating Directors & Officers (D&O) insurance renewals for Zurich IPZ using LangChain-based AI agent workflows, Python APIs, custom AWS Guardrails, and RAG validation. Expert in Azure AI Services, OpenAI LLMs, LangChain, Python, FastAPI, Streamlit, React.js, AI Guardrails, and Retrieval-Augmented Generation (RAG). Highly accomplished in document intelligence solutions, AI governance frameworks, automated validation platforms, and reusable AI accelerators supporting enterprise adoption of Generative AI. Strong foundation in cloud technologies, data engineering, Snowflake migration, and large-scale healthcare data modernization initiatives.`,
     stats: [
       { label: "Years of Experience", value: "4+" },
       { label: "AI Accelerators Built", value: "3+" },
@@ -158,6 +158,23 @@ export const portfolioData = {
   ],
 
   projects: [
+    {
+      id: "zurich-ipz-do-renewal",
+      title: "Zurich IPZ: D&O Insurance Renewal Automation",
+      subtitle: "Agentic AI Workflows for Directors & Officers Insurance",
+      tech: ["LangChain", "LangGraph", "Python", "FastAPI", "React.js", "AWS Guardrails", "RAG"],
+      role: "Senior AI Engineer",
+      problem: "The Directors & Officers (D&O) insurance renewal process is largely manual, spanning data gathering, validation, and business review stages. This slows every renewal and increases operational effort and the risk of inconsistencies.",
+      solution: "Building AI agent workflows that automate the different stages of the D&O renewal lifecycle. LangChain-based workflows drive the orchestration, Python APIs handle backend business logic, validation logic enforces data and business rules, and React.js interfaces integrate with the AI-powered backend services.",
+      contributions: [
+        "Developed and orchestrated LangChain nodes implementing AI agent workflows for the different stages of the renewal process.",
+        "Built Python-based APIs to support business logic, AI workflow execution, and integration between application components.",
+        "Implemented business and data validation logic to ensure accuracy, consistency, and reliability across renewal stages.",
+        "Implemented custom AWS Guardrails and RAG validation workflows, and integrated AI-powered backend services with React.js frontends."
+      ],
+      impact: "Streamlines the D&O insurance renewal process through AI-driven automation, reducing manual intervention and improving operational efficiency for business stakeholders.",
+      linkText: "LangChain | AWS | React.js"
+    },
     {
       id: "contract-intelligence",
       title: "Contract Intelligence Platform",

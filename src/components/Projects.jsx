@@ -4,6 +4,7 @@ import excelArchitecture from "../assets/projects/excel_data_cleanup_and_validat
 
 // Category map for each project
 const PROJECT_CATEGORIES = {
+  "zurich-ipz-do-renewal": "GenAI",
   "contract-intelligence": "GenAI",
   "ai-guardrail-framework": "GenAI",
   "rag-validation-automation": "Automation",
